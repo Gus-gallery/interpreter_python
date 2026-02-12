@@ -92,3 +92,23 @@ class Parser:
 
     def parse(self):
         return self.term()
+
+
+class Interpreter:
+    def __init__(self, parser):
+        self.parser = parser
+
+    def visit(self, node):
+        if isinstance(node, Num):
+            return node.token[1]
+        if isinstance(node, BinOp):
+            if node.op[0] == 'PLUS':
+                return self.visit(node.left) + self.visit(node.right)
+        self.error()
+
+    def error(self):
+        raise Exception('Invalid node')
+
+    def interpret(self):
+        tree = self.parser.parse()
+        return self.visit(tree)
