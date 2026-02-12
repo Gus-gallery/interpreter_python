@@ -49,3 +49,46 @@ class Lexer:
                 return ('PLUS', '+')
             self.error()
         return ('EOF', None)
+
+
+class AST:
+    pass
+
+
+class BinOp(AST):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+
+
+class Num(AST):
+    def __init__(self, token):
+        self.token = token
+
+
+class Parser:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+
+    def error(self):
+        raise Exception('Invalid syntax')
+
+    def factor(self):
+        token = self.current_token
+        if token[0] == 'NUMBER':
+            self.current_token = self.lexer.get_next_token()
+            return Num(token)
+        self.error()
+
+    def term(self):
+        node = self.factor()
+        while self.current_token[0] == 'PLUS':
+            token = self.current_token
+            self.current_token = self.lexer.get_next_token()
+            node = BinOp(node, token, self.factor())
+        return node
+
+    def parse(self):
+        return self.term()
