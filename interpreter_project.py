@@ -112,3 +112,6 @@ class Interpreter:
     def interpret(self):
         tree = self.parser.parse()
         return self.visit(tree)
+
+
+"Today i felt like doing nothing, but still i wanted to publish something to github. :)"
